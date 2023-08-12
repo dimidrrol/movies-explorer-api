@@ -1,10 +1,12 @@
-const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
+
 const { NODE_ENV, JWT_SECRET } = process.env;
 const NotFoundError = require('../errors/not-found-err');
 const UnauthorizedError = require('../errors/unauthorized-err');
 const ConflictError = require('../errors/conflict-err');
+const ValidationError = require('../errors/validation-err');
 
 const getUser = (req, res, next) => {
   const id = req.user._id;
@@ -23,7 +25,7 @@ const patchUser = (req, res, next) => {
   const id = req.user._id;
   const { name, email } = req.body;
 
-  User.findByIdAndUpdate(id, { name: name, email: email }, { new: true, runValidators: true })
+  User.findByIdAndUpdate(id, { name, email }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
         throw new NotFoundError('Пользователь не найден');
@@ -31,7 +33,9 @@ const patchUser = (req, res, next) => {
       res.send(user);
     })
     .catch((err) => {
-      if (err.code === 11000) {
+      if (err.name === 'ValidationError') {
+        next(new ValidationError(err.message));
+      } else if (err.code === 11000) {
         next(new ConflictError('Такой email уже зарегистрирован'));
       } else {
         next(err);
@@ -43,13 +47,15 @@ const createUser = (req, res, next) => {
   const { name, email, password } = req.body;
 
   bcrypt.hash(password, 10)
-    .then(hash => User.create({ name, email, password: hash }))
+    .then((hash) => User.create({ name, email, password: hash }))
     .then((user) => {
       const publicUser = { name: user.name, email: user.email };
       res.status(201).send(publicUser);
     })
     .catch((err) => {
-      if (err.code === 11000) {
+      if (err.name === 'ValidationError') {
+        next(new ValidationError(err.message));
+      } else if (err.code === 11000) {
         next(new ConflictError('Такой email уже зарегистрирован'));
       } else {
         next(err);
@@ -74,15 +80,15 @@ const login = (req, res, next) => {
         User.findOne({ email })
           .then((user) => {
             const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
-            res.status(200).cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true, sameSite: true }).send({ token: token, _id: user._id });
-          })
+            res.status(200).cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true, sameSite: true }).send({ token, _id: user._id });
+          });
       }
     })
     .catch(next);
 };
 
 const logout = (req, res) => {
-  return res.clearCookie('jwt').status(200).send({ message: 'Куки очищены' });
+  res.clearCookie('jwt').status(200).send({ message: 'Куки очищены' });
 };
 
 module.exports = {
@@ -90,5 +96,5 @@ module.exports = {
   patchUser,
   createUser,
   login,
-  logout
+  logout,
 };

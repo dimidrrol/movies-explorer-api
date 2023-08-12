@@ -1,6 +1,13 @@
 require('dotenv').config();
 
-const { NODE_ENV, JWT_SECRET, DB_HOST, PORT, SECRET } = process.env;
+const {
+
+  NODE_ENV,
+  JWT_SECRET,
+  DB_HOST,
+  PORT,
+
+} = process.env;
 const DEV_SECRET = 'dev-secret';
 const DEV_DB_HOST = 'mongodb://127.0.0.1:27017/bitfilmsdb';
 const DEV_PORT = 3000;
@@ -14,5 +21,5 @@ const SECRET_STRING = NODE_ENV === 'production' && JWT_SECRET ? JWT_SECRET : DEV
 module.exports = {
   DB,
   SERVER_PORT,
-  SECRET_STRING
- };
+  SECRET_STRING,
+};

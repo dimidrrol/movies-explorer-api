@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: [2, 'Минимальная длина поля "name" - 2'],
     maxlength: [30, 'Максимальная длина поля "name" - 30'],
-    required: [true, 'Поле "name" должно быть заполнено']
+    required: [true, 'Поле "name" должно быть заполнено'],
   },
   email: {
     type: String,
@@ -14,15 +14,15 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: {
       validator: (v) => validator.isEmail(v),
-      message: 'Некорректный email'
-    }
+      message: 'Некорректный email',
+    },
   },
   password: {
     type: String,
     required: [true, 'Поле "password" должно быть заполнено'],
-    select: false
-  }
-}, { versionKey: false});
+    select: false,
+  },
+}, { versionKey: false });
 
 const User = mongoose.model('user', userSchema);
 module.exports = User;

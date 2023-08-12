@@ -1,44 +1,44 @@
 const { celebrate, Joi } = require('celebrate');
 const { ObjectId } = require('mongoose').Types;
 
-const validateUrlRegex = /^(http|https):\/\/(?:www\.)?[a-zA-Z0-9\-._~:/?#\[\]@!$&'()*+,;=]+#?$/;
+const urlRegex = /^(?:https?:\/\/)?(?:www\.)?([A-Za-z0-9-]+\.)+[A-Za-z]{2,}(\/\S*)?$/;
 
 const validateMovie = celebrate({
   body: Joi.object().keys({
     country: Joi.string().required(),
     director: Joi.string().required(),
-    duratin: Joi.number().required(),
+    duration: Joi.number().required(),
     year: Joi.string().required(),
     description: Joi.string().required(),
-    image: Joi.string().required().pattern(validateUrlRegex),
-    trailerLink: Joi.string().required().pattern(validateUrlRegex),
-    thumbnail: Joi.string().required().pattern(validateUrlRegex),
+    image: Joi.string().required().pattern(urlRegex),
+    trailerLink: Joi.string().required().pattern(urlRegex),
+    thumbnail: Joi.string().required().pattern(urlRegex),
     movieId: Joi.number().required(),
-    nameRu: Joi.string().required(),
-    nameEN: Joi.string().required()
-  }).unknown(true)
+    nameRU: Joi.string().required(),
+    nameEN: Joi.string().required(),
+  }),
 });
 
 const validateUser = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     email: Joi.string().email().required(),
-    password: Joi.string().required()
-  }).unknown(true)
+    password: Joi.string().required(),
+  }),
 });
 
 const validateLogin = celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
-    password: Joi.string().required()
-  }).unknown(true)
+    password: Joi.string().required(),
+  }),
 });
 
 const validateProfile = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    email: Joi.string().email().required()
-  }).unknown(true)
+    email: Joi.string().email().required(),
+  }),
 });
 
 const validateId = celebrate({
@@ -48,8 +48,8 @@ const validateId = celebrate({
         return value;
       }
       return helpers.message('Неправильный id');
-    })
-  }).unknown(true)
+    }),
+  }),
 });
 
 module.exports = {
@@ -57,5 +57,5 @@ module.exports = {
   validateUser,
   validateLogin,
   validateProfile,
-  validateId
-}
+  validateId,
+};
