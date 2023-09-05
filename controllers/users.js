@@ -80,7 +80,7 @@ const login = (req, res, next) => {
         User.findOne({ email })
           .then((user) => {
             const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
-            res.status(200).cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true, sameSite: true }).send({ token, _id: user._id });
+            res.status(200).cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true }).send({ token, _id: user._id });
           });
       }
     })

@@ -26,7 +26,7 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.use(requestLogger);
 app.use(limiter);
-app.use(cors({ origin: ['http://localhost:3000'], credentials: true, maxAge: 36 }));
+app.use(cors({ origin: ['http://localhost:3000', 'http://films.student.project.nomoreparties.co', 'https://films.student.project.nomoreparties.co'], credentials: true, maxAge: 36 }));
 
 app.use(require('./routes/login'));
 
