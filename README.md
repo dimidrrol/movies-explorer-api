@@ -1,5 +1,5 @@
 # Backend проекта movies-explorer  
-Ссылка на api: https://api.films.student.project.nomoreparties.co  
+Ссылка на frontend: https://github.com/dimidrrol/movies-explorer-frontend  
 В проекте реализованно 8 роутов:  
 1. POST /signup (регистрация).  
 2. POST /signin (вход зарегистрированного пользователя).  
@@ -13,3 +13,10 @@
 Все роуты кроме /signup и /signin защищены авторизацией, токен авторизованного пользователя хранится в "куках". Валидация всех данных выполнена при помощи Joi и celebrate. Организован централизованный обработчик ошибок, так же для каждой ошибки создан отдельный класс, который наследуется из "Error".  
   
 Стэк: Node.js, express, MongoDB.
+
+## Запуск проекта
+
+* Dev-сервер:
+```
+npm run dev
+```
